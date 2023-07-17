@@ -6,6 +6,8 @@ class EmojiArtDocument: ObservableObject {
 
 	init() {
 		emojiArt = EmojiArtModel()
+		emojiArt.addEmoji("🍺", at: (80, 80), size: 50)
+		emojiArt.addEmoji("🤣", at: (-20, -120), size: 50)
 	}
 
 	var emojis: [EmojiArtModel.Emoji] {
@@ -22,8 +24,8 @@ class EmojiArtDocument: ObservableObject {
 		emojiArt.background = background
 	}
 
-	func addEmoji(_ emoji: String, at location: (x: Int, y: Int), size: Int) {
-		emojiArt.addEmoji(emoji, at: location, size: size)
+	func addEmoji(_ emoji: String, at location: (x: Int, y: Int), size: CGFloat) {
+		emojiArt.addEmoji(emoji, at: location, size: Int(size))
 	}
 
 	func moveEmoji(_ emoji: EmojiArtModel.Emoji, by offset: CGSize) {

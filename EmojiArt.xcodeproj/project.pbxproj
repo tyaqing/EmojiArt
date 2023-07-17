@@ -66,8 +66,8 @@
 				252CD1B92A6402DA0013EC78 /* Assets.xcassets */,
 				252CD1C02A6402DA0013EC78 /* EmojiArt.xcdatamodeld */,
 				252CD1BB2A6402DA0013EC78 /* Preview Content */,
-				252CD1C82A64064C0013EC78 /* EmojiArtModel.swift */,
 				252CD1CC2A643C240013EC78 /* EmojiArtDocument.swift */,
+				252CD1C82A64064C0013EC78 /* EmojiArtModel.swift */,
 				252CD1CA2A643AEE0013EC78 /* EmojiArtModel.Background.swift */,
 				252CD1CE2A644E2F0013EC78 /* UtilityExtensions.swift */,
 			);
