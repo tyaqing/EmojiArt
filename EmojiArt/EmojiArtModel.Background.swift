@@ -8,7 +8,7 @@
 import Foundation
 
 extension EmojiArtModel {
-	enum Background {
+	enum Background:Equatable {
 		case blank
 		// URL可以是本地资源也可以是远程资源
 		case url(URL)
