@@ -1,11 +1,3 @@
-//
-//  ContentView.swift
-//  EmojiArt
-//
-//  Created by yakir on 2023/7/16.
-//
-
-import CoreData
 import SwiftUI
 
 struct EmojiArtDocumentView: View {
@@ -24,14 +16,17 @@ struct EmojiArtDocumentView: View {
 			ZStack {
 				Color.white.overlay{
 					OptionalImage(uiImage: document.backgroundImage)
+						.scaleEffect(zoomScale)
 						.position(convertFromEmojiCoordinates((0,0), in: geometry))
 				}
+				.gesture(doubleTapToZoom(in: geometry.size))
 				if document.backgroundImageFetchStatus == .fetching{
 					ProgressView().scaleEffect(2)
 				}else{
 					ForEach(document.emojis) { emoji in
 						Text(emoji.text)
 							.font(.system(size: fontSize(for: emoji)))
+							.scaleEffect(zoomScale)
 							.position(position(for: emoji, in: geometry))
 					}
 				}
@@ -41,7 +36,7 @@ struct EmojiArtDocumentView: View {
 			}
 		}
 	}
-	
+	 
 	private func drop(
 		providers:[NSItemProvider],
 		at location:CGPoint,
@@ -64,7 +59,7 @@ struct EmojiArtDocumentView: View {
 				 document.addEmoji(
 					 String(emoji),
 					 at: convertToEmojiCoordinates(location,in: geometry),
-					 size: defaultEmojiFontSize
+					 size: defaultEmojiFontSize / zoomScale
 				 )
 			 }
 		 }
@@ -77,6 +72,27 @@ struct EmojiArtDocumentView: View {
 		CGFloat(emoji.size)
 	}
 
+	@State private var zoomScale:CGFloat = 1
+	private func doubleTapToZoom(in size:CGSize)->some Gesture{
+		TapGesture(count: 2)
+			.onEnded{
+				withAnimation{
+					zoomToFit(document.backgroundImage, in: size)
+				}
+				
+			}
+	}
+	private func zoomToFit(_ image:UIImage?,in size:CGSize){
+		
+				if let image = image,image.size.width > 0,image.size.height > 0,
+					 size.width > 0,size.height > 0{
+						let hZoom = size.width / image.size.width
+						let vZoom = size.height / image.size.height
+						zoomScale =  min(hZoom,vZoom)
+				}
+//				return 1
+		}
+	
 	private func position(for emoji: EmojiArtModel.Emoji, in geometry: GeometryProxy) -> CGPoint {
 		return convertFromEmojiCoordinates((emoji.x, emoji.y), in: geometry)
 	}
@@ -87,8 +103,8 @@ struct EmojiArtDocumentView: View {
 	)->(x:Int,y:Int){
 		let center = geometry.frame(in: .local).center
 		let location = CGPoint(
-			x: location.x - center.x,
-			y: location.y - center.y
+			x: (location.x - center.x) / zoomScale,
+			y: (location.y - center.y)/zoomScale
 		)
 		return (Int(location.x),Int(location.y))
 	}
@@ -96,8 +112,8 @@ struct EmojiArtDocumentView: View {
 	private func convertFromEmojiCoordinates(_ location: (x: Int, y: Int), in geometry: GeometryProxy) -> CGPoint {
 		let center = geometry.frame(in: .local).center
 		return CGPoint(
-			x: center.x + CGFloat(location.x),
-			y: center.y + CGFloat(location.y)
+			x: center.x + CGFloat(location.x) * zoomScale,
+			y: center.y + CGFloat(location.y) * zoomScale
 		)
 	}
 
@@ -105,21 +121,19 @@ struct EmojiArtDocumentView: View {
 		ScrollingEmojiView(emojis: testemojis)
 			.font(.system(size: defaultEmojiFontSize))
 	}
-
 	let testemojis = "😀😂😍👍🎉🌞🌈🍔🍦⚽️🚗📱🎸✈️🏠🚀🐼🦄"
-}
-
-struct ScrollingEmojiView: View {
-	let emojis: String
-	var body: some View {
-		ScrollView(.horizontal) {
-			HStack {
-				ForEach(emojis.map { String($0) }, id: \.self) { emoji in
-					Text(emoji)
-						.onDrag {
-							// 这里表示在拖拽到时候给到的异步信息
-							NSItemProvider(object: emoji as NSString)
-						}
+	struct ScrollingEmojiView : View {
+		let emojis: String
+		var body: some View {
+			ScrollView(.horizontal) {
+				HStack {
+					ForEach(emojis.map { String($0) }, id: \.self) { emoji in
+						Text(emoji)
+							.onDrag {
+								// 这里表示在拖拽到时候给到的异步信息
+								NSItemProvider(object: emoji as NSString)
+							}
+					}
 				}
 			}
 		}
