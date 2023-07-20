@@ -4,16 +4,63 @@ import SwiftUI
 class EmojiArtDocument: ObservableObject {
 	@Published private(set) var emojiArt: EmojiArtModel {
 		didSet {
+			scheduleAutoSave()
 			if emojiArt.background != oldValue.background {
 				fetchBackgroundImageDataIfNecessary()
 			}
 		}
 	}
 
+	private var autoSaveTime: Timer?
+
+	private func scheduleAutoSave() {
+		autoSaveTime?.invalidate()
+		autoSaveTime = Timer.scheduledTimer(withTimeInterval: Autosave.coalescingInterval, repeats: false) { _ in
+			self.autosave()
+		}
+	}
+
+	private enum Autosave {
+		static let filename = "Autosaved.emojiart"
+		static var url: URL? {
+			let documentDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first
+			return documentDirectory?.appendingPathComponent(filename)
+		}
+
+		static let coalescingInterval = 5.0
+	}
+
+	private func autosave() {
+		if let url = Autosave.url {
+			save(to: url)
+		}
+	}
+
+	private func save(to url: URL) {
+		let thisFunction = "\(String(describing: self)).\(#function)"
+
+		do {
+			let data = try emojiArt.json()
+			print("\(thisFunction) \(url): data=\(String(data: data, encoding: .utf8) ?? "nil")")
+			try data.write(to: url)
+			print("\(thisFunction) \(url): success!")
+		} catch let encodingError where encodingError is EncodingError {
+			print("\(thisFunction) \(url): encodingError:\(encodingError.localizedDescription)")
+		} catch {
+			print("\(thisFunction) \(url): \(error)")
+		}
+	}
+
 	init() {
-		emojiArt = EmojiArtModel()
-		emojiArt.addEmoji("🍺", at: (80, 80), size: 50)
-		emojiArt.addEmoji("🤣", at: (-20, -120), size: 50)
+		if let url = Autosave.url, let autosavedEmojiArt = try? EmojiArtModel(url: url) {
+			emojiArt = autosavedEmojiArt
+			fetchBackgroundImageDataIfNecessary()
+		} else {
+			emojiArt = EmojiArtModel()
+		}
+
+//		emojiArt.addEmoji("🍺", at: (80, 80), size: 50)
+//		emojiArt.addEmoji("🤣", at: (-20, -120), size: 50)
 	}
 
 	var emojis: [EmojiArtModel.Emoji] {
