@@ -1,24 +1,44 @@
 import SwiftUI
 
-struct Palette: Identifiable {
+struct Palette: Identifiable, Codable {
 	var name: String
 	var emojis: String
 	var id: Int
+	fileprivate init(name: String, emojis: String = "", id: Int) {
+		self.name = name
+		self.emojis = emojis
+		self.id = id
+	}
 }
 
 class PaletteStore: ObservableObject {
 	let name: String
 
 	@Published var palettes = [Palette]() {
-		didSet {}
+		didSet {
+			storeInUserDefaults()
+		}
 	}
 
-	private func storeInUserDefaults() {}
+	private var userDefaultsKey: String {
+		"PaletteStore:\(name)"
+	}
 
-	private func restoreFromUserDefaults() {}
+	private func storeInUserDefaults() {
+		UserDefaults.standard.set(try? JSONEncoder().encode(palettes), forKey: userDefaultsKey)
+	}
+
+	private func restoreFromUserDefaults() {
+		if let jsonData = UserDefaults.standard.data(forKey: userDefaultsKey),
+		   let decodedPalettes = try? JSONDecoder().decode([Palette].self, from: jsonData)
+		{
+			palettes = decodedPalettes
+		}
+	}
 
 	init(name: String) {
 		self.name = name
+		restoreFromUserDefaults()
 		if palettes.isEmpty {
 			insertPalette(named: "Vehicles", emojis: "🚗🚕🚙🚌🚎🏎🚓🚑🚒🚐🚚🚛🚜🛴🚲🛵🏍🛺🚔🚍🚘🚖🚡🚠🚟🚃🚋🚞🚝🚄🚅🚈🚂🚆🚇🚊🚉✈️🛫🛬🛩🛸🚀🛰🚁🛶⛵️🚤🛥🛳⛴🚢")
 			insertPalette(named: "Animals", emojis: "🐶🐱🐭🐹🐰🦊🐻🐼🐨🐯🦁🐮🐷🐽🐸🐵🦄🐞🐍🐢🐠🐅🐆🦓🦍🐘🦛🦏🐪🐫🦒🦘🐃🐂🐄🐎🐖🐏🐑🦙🐐🦌🐕🐩🐈🐓🦃🦚🦜🦢🐲🐉🦕🦖🌸💮🏵️🌹🥀🌺🌻🌼🌷🍀☘️🌾🌵🎄")
@@ -26,6 +46,8 @@ class PaletteStore: ObservableObject {
 			insertPalette(named: "Weather", emojis: "☀️🌤️⛅🌥️🌦️☁️🌧️⛈️🌩️⚡🌨️❄️🌬️💨💧💦☔⛱️🌞🌛🌜🌚🌝🌖🌗🌘🌑🌒🌓🌔🌙⭐🌟🔥💥🌈")
 			insertPalette(named: "Sports", emojis: "⚽⚾🏀🏐🏈🎾🎱🏓🏸🥊🥋🎣⛸️🎿⛷️🏂🏋️‍♀️🤺🏌️‍♀️🏇⛹️‍♀️🤾‍♀️🏊‍♀️🤽‍♀️🚣‍♀️🧘‍♀️🚴‍♀️🤼")
 			insertPalette(named: "Music", emojis: "🎵🎶🎼🎹🎺🎸🎷🎻🪕🪗🪘🥁🔔🎤🎧🎙️🎚️🎛️📻📣📯🥕🥯🍖🍗🍔")
+		} else {
+			print("succeessfully loaded palettes")
 		}
 	}
 
