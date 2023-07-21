@@ -19,6 +19,7 @@
 		25AF13B52A6988DD009EBB98 /* PalletteStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 25AF13B42A6988DD009EBB98 /* PalletteStore.swift */; };
 		25AF13B72A6AB7AF009EBB98 /* PaletteChooser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 25AF13B62A6AB7AF009EBB98 /* PaletteChooser.swift */; };
 		25AF13B92A6AC48B009EBB98 /* UtilityView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 25AF13B82A6AC48B009EBB98 /* UtilityView.swift */; };
+		25AF13BB2A6AD092009EBB98 /* PaletteEditor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 25AF13BA2A6AD092009EBB98 /* PaletteEditor.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -35,6 +36,7 @@
 		25AF13B42A6988DD009EBB98 /* PalletteStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PalletteStore.swift; sourceTree = "<group>"; };
 		25AF13B62A6AB7AF009EBB98 /* PaletteChooser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaletteChooser.swift; sourceTree = "<group>"; };
 		25AF13B82A6AC48B009EBB98 /* UtilityView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UtilityView.swift; sourceTree = "<group>"; };
+		25AF13BA2A6AD092009EBB98 /* PaletteEditor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaletteEditor.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -78,6 +80,7 @@
 				252CD1CA2A643AEE0013EC78 /* EmojiArtModel.Background.swift */,
 				252CD1CE2A644E2F0013EC78 /* UtilityExtensions.swift */,
 				25AF13B62A6AB7AF009EBB98 /* PaletteChooser.swift */,
+				25AF13BA2A6AD092009EBB98 /* PaletteEditor.swift */,
 				25AF13B82A6AC48B009EBB98 /* UtilityView.swift */,
 			);
 			path = EmojiArt;
@@ -167,6 +170,7 @@
 				252CD1CF2A644E2F0013EC78 /* UtilityExtensions.swift in Sources */,
 				252CD1C92A64064C0013EC78 /* EmojiArtModel.swift in Sources */,
 				252CD1B62A6402D90013EC78 /* EmojiArtApp.swift in Sources */,
+				25AF13BB2A6AD092009EBB98 /* PaletteEditor.swift in Sources */,
 				25AF13B52A6988DD009EBB98 /* PalletteStore.swift in Sources */,
 				25AF13B92A6AC48B009EBB98 /* UtilityView.swift in Sources */,
 				252CD1CB2A643AEE0013EC78 /* EmojiArtModel.Background.swift in Sources */,
